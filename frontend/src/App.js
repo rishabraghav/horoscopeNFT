@@ -1,7 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from "react";
 import { Contract, providers } from "ethers";
+
+import NFT from "./abi/HoroscopeNFT.json";
+const NFT_CONTRACT_ADDRESS = "0x7febBB170c20A3BF2b32fc6760C4C74D6b5a4ce5";
 
 function App() {
   // state to keep track whether the user has installed wallet or not.
@@ -125,6 +127,26 @@ function calculateZodiacSign(date) {
     }
 }
 
+useEffect(() => {
+    function initNFTContract() {
+        const provider = new providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        setNFTContract(new Contract(NFT_CONTRACT_ADDRESS, NFT.abi, signer));
+
+    }
+    initNFTContract();
+}, [account]);
+
+async function mintNFT() {
+    setIsMinting(true);
+    try {
+        await NFTContract.mintNFT(account, zodiacSign);
+    } catch (e) {}
+    finally{
+        setIsMinting(false);
+    }
+}
+
   if (account == null) {
     return (
       <div className="App">
@@ -139,7 +161,7 @@ function calculateZodiacSign(date) {
     <div className="App">
       <h2>Horroscope NFT minting Dapp</h2>
       <p>Connected as: <span className="accountAddress">{account}</span></p>
-      <input onChange={handleDateInput} value={date} type="date" id="dob"/>
+      <input className="dateInput" onChange={handleDateInput} value={date} type="date" id="dob"/>
    <br />
    <br />
      {zodiacSign ? (
@@ -166,7 +188,7 @@ function calculateZodiacSign(date) {
  
        <br/>
        <br/>
-       <button className="mintButton">Mint</button>
+       <button className="mintButton" isLoading={isMinting} onClick={mintNFT}>Mint</button>
     </div>
 
     

@@ -32,6 +32,13 @@ body{
   background-color: #9384D1;
 }
 
+.dateInput{
+  background-color: #ECC9EE;
+  border-radius: 3px;
+  border: 1px solid #FFDCB6;
+  height: 20px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
